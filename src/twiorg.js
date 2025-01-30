@@ -1,41 +1,18 @@
 var Twiorg = {
 
   /**
-   * Extract the link entities from the provided text.
    *
-   * Text containing [[foo]] would yield a link named "foo" pointing to the
-   * "foo" passage.
-   * Text containing [[foo->bar]] would yield a link named "foo" pointing to the
-   * "bar" passage.
-   *
-   * @param {String} text
+   * Replace Twine link format [[link_text->link]] with Org link format [[link][link_text]]
+   * 
+   * @param String
    *   The text to examine.
    *
-   * @return {Array|null}
-   *   The array of link objects, containing a `name` and a `link`.
+   * @return String
+   *   The text with links converted to Org format
    */
-  extractLinksFromText: function(text) {
-    var links = text.match(/\[\[.+?\]\]/g);
-    if (!links) {
-      return null;
-    }
-
-    return links.map(function(link) {
-      var differentName = link.match(/\[\[(.*?)\-\&gt;(.*?)\]\]/);
-      if (differentName) {
-        // [[name->link]]
-        return {
-          name: differentName[1],
-          link: differentName[2]
-        };
-      } else {
-        // [[link]]
-        link = link.substring(2, link.length-2)
-        return {
-          name: link,
-          link: link
-        }
-      }
+  convertLinksToOrgFormat: function(text) {
+    return text.replace(/\[\[(.*?)\-\&gt;(.*?)\]\]/g, function(match, linkText, link) {
+      return `[[${link}][${linkText}]]`; 
     });
   },
 
@@ -45,40 +22,37 @@ var Twiorg = {
    * @param {Object} passage
    *   The passage data HTML element.
    *
-   * @return {Object}
-   *   Object containing specific passage data. Examples include `name`, `pid`,
-   *   `position`, etc.
+   * @return String
+   *   String containing the procesed passage in org syntax
    */
   convertPassage: function(passage) {
-  	var dict = {text: passage.innerHTML};
+    const passageProperties = getPassageProperties(passage);
+    const convertedPassageText = Twiorg.convertLinksToOrgFormat(passage.innerHTML);
 
-    var links = Twiorg.extractLinksFromText(dict.text);
-    if (links) {
-      dict.links = links;
-    }
+    return `* ${passage.attributes.name.value}\n${passageProperties}\n${convertedPassageText}\n`;
+  },
+  /**
+   * Get the Passage properties
+   *
+   * @param {Object} passage
+   *   The passage data HTML element.
+   *
+   * @return String
+   *   String containing the properties in an Org friendly syntax
+   */
+  getPassageProperties: function(passage) {
+    const attributes = ["name", "pid", "position", "tags"];
+    let properties = ":PROPERTIES:\n";
 
-    ["name", "pid", "position", "tags"].forEach(function(attr) {
-      var value = passage.attributes[attr].value;
+    attributes.forEach((attr) => {
+      const value = passage.attributes[attr].value;
       if (value) {
-        dict[attr] = value;
+	properties += `:${attr}: ${value}\n`;
       }
     });
 
-    if(dict.position) {
-      var position = dict.position.split(',')
-      dict.position = {
-        x: position[0],
-        y: position[1]
-      }
-    }
-
-    if (dict.tags) {
-      dict.tags = dict.tags.split(" ");
-    }
-
-    return dict;
-	},
-
+    return `${properties}\n:END:`;
+  },
   /**
    * Convert an entire story.
    *
@@ -89,46 +63,47 @@ var Twiorg = {
    *   Object containing processed "passages" of data.
    */
   convertStory: function(story) {
-    var passages = story.getElementsByTagName("tw-passagedata");
-    var convertedPassages = Array.prototype.slice.call(passages).map(Twiorg.convertPassage);
+    const passages = story.getElementsByTagName("tw-passagedata");
 
-    var dict = {
-      passages: convertedPassages
-    };
+    const convertedPassages = Array.prototype.slice.call(passages).map(Twiorg.convertPassage);
 
-    ["name", "startnode", "creator", "creator-version", "ifid"].forEach(function(attr) {
-      var value = story.attributes[attr].value;
+    const orgText = convertedPassages.join("\n");
+
+    const storyMetaData = Twiorg.getStoryMetaData(story);
+
+    return `${storyMetadata}\n${orgText}`;
+ 
+  },
+  /**
+   * Get the Story Meta Data
+   *
+   * @param {Object} story
+   *   The story data HTML element.
+   *
+   * @return String
+   *   String containing processed metadata
+   */
+  getStoryMetaData: function(story) {
+    const attributes = ["name", "startnode", "creator", "creator-version", "ifid"];
+    let metadata = "#+TITLE: ${story.attributes.name.value}\n* About:\n";
+
+    attributes.forEach((attr) => {
+      const value = story.attributes[attr].value;
       if (value) {
-        dict[attr] = value;
+	metadata += `${attr}: ${value}\n`;
       }
     });
-
-    // Add PIDs to links
-    var pidsByName = {};
-    dict.passages.forEach(function(passage) {
-      pidsByName[passage.name] = passage.pid;
-    });
-
-    dict.passages.forEach(function(passage) {
-      if (!passage.links) return;
-      passage.links.forEach(function(link) {
-        link.pid = pidsByName[link.link];
-        if (!link.pid) {
-          link.broken = true;
-        }
-      });
-    });
-
-    return dict;
+    
+    return metadata;
   },
 
   /**
    * The entry-point for converting Twine data into the Twiorg format.
    */
   convert: function() {
-    var storyData = document.getElementsByTagName("tw-storydata")[0];
-    var json = JSON.stringify(Twiorg.convertStory(storyData), null, 2);
-    document.getElementById("output").innerHTML = json;
+    const storyData = document.getElementsByTagName("tw-storydata")[0];
+    const org = Twiorg.convertStory(storyData);
+    document.getElementById("output").innerHTML = org;
   }
 }
 

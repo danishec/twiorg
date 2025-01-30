@@ -4,7 +4,7 @@
   "description": "Export your Twine 2 story as an Org file",
   "main": "format.js",
   "scripts": {
-    "build": "node build.js",
+    "build": "node build.js"
   },
   "repository": {
     "type": "git",
@@ -17,10 +17,8 @@
   },
   "homepage": "https://github.com/danishec/twiorg",
   "devDependencies": {
-    "chai": "^3.4.1",
-    "express": "^4.13.3",
-    "jsdom": "^16.3.0",
-    "uglify-js": "^2.6.1",
+    "jsdom": ">=16.3.0",
+    "uglify-js": ">=2.6.1"
   },
   "dependencies": {
     "gh-pages": ">=3.1.0",
