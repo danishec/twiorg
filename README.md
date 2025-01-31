@@ -12,7 +12,7 @@ From the Twine 2 story select add a story format, and point it to the url (https
 
 Here's an example of its output:
 
-```Org
+```org
 #+TITLE: Daphne's $10 Adventure
 * Twine 2 Metadata:
 :PROPERTIES:
