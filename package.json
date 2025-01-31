@@ -1,6 +1,6 @@
 {
   "name": "Twiorg",
-  "version": "0.2",
+  "version": "0.2.2",
   "description": "Export your Twine 2 story as an Org file",
   "main": "format.js",
   "scripts": {

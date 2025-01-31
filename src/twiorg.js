@@ -35,7 +35,7 @@ var Twiorg = {
       }
     });
 
-    return `${properties}\n:END:`;
+    return `${properties}:END:`;
   },
   /**
    * Convert an entire passage.
@@ -53,7 +53,7 @@ var Twiorg = {
     return `* ${passage.attributes.name.value}\n${passageProperties}\n${convertedPassageText}\n`;
   },
   /**
-   * Get the Story Meta Data
+   * Get the Story Metadata
    *
    * @param {Object} story
    *   The story data HTML element.
@@ -63,7 +63,7 @@ var Twiorg = {
    */
   getStoryMetaData: function(story) {
     const attributes = ["name", "startnode", "creator", "creator-version", "ifid"];
-    let metadata = "#+TITLE: ${story.attributes.name.value}\n* About:\n";
+    let metadata = `#+TITLE: ${story.attributes.name.value}\n* Twine 2 Metadata:\n:PROPERTIES:`;
 
     attributes.forEach((attr) => {
       const value = story.attributes[attr].value;
@@ -72,7 +72,7 @@ var Twiorg = {
       }
     });
     
-    return metadata;
+    return `${metadata}:END:\n`;
   },
   /**
    * Convert an entire story.
@@ -90,7 +90,7 @@ var Twiorg = {
 
     const orgText = convertedPassages.join("\n");
 
-    const storyMetaData = Twiorg.getStoryMetaData(story);
+    const storyMetaData = Twiorg.getStoryMetaData(story).trim();
 
     return `${storyMetaData}\n${orgText}`;
  
