@@ -40,7 +40,7 @@ var Twiorg = {
       // Escape special HTML characters in the code
       const escapedCode = Twiorg.escapeHtml(code);
       // Construct the Org mode Babel source code block
-      return `#+BEGIN_SRC javascript\n${escapedCode}\n#+END_SRC\n`;
+      return `#+BEGIN_SRC javascript\n${escapedCode}\n#+END_SRC`;
     });
   },
   /**
@@ -138,7 +138,7 @@ var Twiorg = {
 
     const storyMetaData = Twiorg.getStoryMetaData(story).trim();
 
-    return `${storyMetaData}\n${orgText}`;
+    return `${storyMetaData}\n\n${orgText}`;
  
   },
   /**
