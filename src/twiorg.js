@@ -32,7 +32,7 @@ var Twiorg = {
   convertJSTemplatesToOrgFormat: function(text) {
     // Regular expression to match JavaScript template tags (<%... %> or <%=... %> or <%-... %>)
     // text was obtained from a call to .innerHTML which automatically escapes "<", ">" and "&". The regexp replace functions thus need to search for the escaped equivalents    
-    return text.replace(/&lt;%(-)?([\s\S]*)%&gt;/g, function(match, trim, code) {
+    return text.replace(/&lt;%=?(-)?([\s\S]*?)%&gt;/g, function(match, trim, code) {
       // If it's a <%- %> tag, trim leading/trailing whitespace from the code
       if (trim) {
 	code = code.trim();
