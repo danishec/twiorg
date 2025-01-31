@@ -2,7 +2,51 @@ var Twiorg = {
 
   /**
    *
-   * Replace Twine link format [[link_text->link]] with Org link format [[link][link_text]]
+   * Function to escape special HTML characters in a string
+   * 
+   * @param String
+   *   The text to escape
+   *
+   * @return String
+   *   The escaped text
+   */
+  escapeHtml: function(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  },
+
+  /**
+   *
+   * Function to convert JavaScript templates to Org mode Babel source code blocks
+   * 
+   * @param String
+   *   The text to examine.
+   *
+   * @return String
+   *   The text with js tempalates processed 
+   */
+  convertJSTemplatesToOrgFormat: function(text) {
+    // Regular expression to match JavaScript template tags (<%... %> or <%=... %> or <%-... %>)
+    return text.replace(/<%(-)?([A-Za-z-_+ \n].*)%>/g, function(match, trim, code) {
+      // If it's a <%- %> tag, trim leading/trailing whitespace from the code
+      if (trim) {
+	code = code.trim();
+      }
+      // Escape special HTML characters in the code
+      const escapedCode = Twiorg.escapeHtml(code);
+      // Construct the Org mode Babel source code block
+      return `#+BEGIN_SRC javascript\n${escapedCode}\n#+END_SRC\n`;
+    });
+  },
+  /**
+   *
+   * Replace Twine javascript source code embedded in a passage with Org Mode format
+   *
+   * Assumes: Twine 2 Snowman javascript format (<% %>, <%+ %>, <%= %>)
    * 
    * @param String
    *   The text to examine.
@@ -11,7 +55,7 @@ var Twiorg = {
    *   The text with links converted to Org format
    */
   convertLinksToOrgFormat: function(text) {
-    return text.replace(/\[\[(.*?)\-\&gt;(.*?)\]\]/g, function(match, linkText, link) {
+    return text.replace(/\[\[(.*?)-&gt;(.*?)\]\]/g, function(match, linkText, link) {
       return `[[${link}][${linkText}]]`; 
     });
   },
@@ -25,7 +69,7 @@ var Twiorg = {
    *   String containing the properties in an Org friendly syntax
    */
   getPassageProperties: function(passage) {
-    const attributes = ["name", "pid", "position", "tags"];
+    const attributes = ["name", "pid", "position", "size", "tags"];
     let properties = ":PROPERTIES:\n";
 
     attributes.forEach((attr) => {
@@ -34,7 +78,6 @@ var Twiorg = {
 	properties += `:${attr}: ${value}\n`;
       }
     });
-
     return `${properties}:END:`;
   },
   /**
@@ -48,9 +91,10 @@ var Twiorg = {
    */
   convertPassage: function(passage) {
     const passageProperties = Twiorg.getPassageProperties(passage);
-    const convertedPassageText = Twiorg.convertLinksToOrgFormat(passage.innerHTML);
+    const passageWithLinksUpdated = Twiorg.convertLinksToOrgFormat(passage.innerHTML);
+    const convertedPassage = Twiorg.convertJSTemplatesToOrgFormat(passageWithLinksUpdated);
 
-    return `* ${passage.attributes.name.value}\n${passageProperties}\n${convertedPassageText}\n`;
+    return `* ${passage.attributes.name.value}\n${passageProperties}\n${convertedPassage}\n`;
   },
   /**
    * Get the Story Metadata
@@ -62,13 +106,13 @@ var Twiorg = {
    *   String containing processed metadata
    */
   getStoryMetaData: function(story) {
-    const attributes = ["name", "startnode", "creator", "creator-version", "ifid"];
-    let metadata = `#+TITLE: ${story.attributes.name.value}\n* Twine 2 Metadata:\n:PROPERTIES:`;
+    const attributes = ["name", "startnode", "creator", "creator-version", "format-version", "options", "tags", "zoom", "hidden", "ifid"];
+    let metadata = `#+TITLE: ${story.attributes.name.value}\n* Twine 2 Metadata:\n:PROPERTIES:\n`;
 
     attributes.forEach((attr) => {
       const value = story.attributes[attr].value;
       if (value) {
-	metadata += `${attr}: ${value}\n`;
+	metadata += `:${attr}: ${value}\n`;
       }
     });
     
