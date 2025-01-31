@@ -1,12 +1,12 @@
 # Twiorg
 
-Twiorg is a story format for [Twine 2](http://twinery.org/2) that exports to an [Org](https://https://orgmode.org/) file. 
+Twiorg is a story format for [Twine 2](http://twinery.org/2) that exports to the [Org](https://https://orgmode.org/) format.
 
-It is inspired by [Twison](https://github.com/lazerwalker/twison/), a useful format that converts a Twine 2 story to json. 
+It is inspired by [Twison](https://github.com/lazerwalker/twison/), a useful format that exports a Twine 2 story to JSON. 
 
 ## Installation
 
-From the Twine 2 story select screen, add a story format, and point it to the url :boom:*needs updating*:boom: 
+From the Twine 2 story select add a story format, and point it to the url (https://cdn.githubraw.com/danishec/twiorg/v0.3.0/dist/format.js)
 
 :boom:*show screenshots*:boom:
 

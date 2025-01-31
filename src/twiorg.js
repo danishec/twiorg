@@ -31,7 +31,8 @@ var Twiorg = {
    */
   convertJSTemplatesToOrgFormat: function(text) {
     // Regular expression to match JavaScript template tags (<%... %> or <%=... %> or <%-... %>)
-    return text.replace(/<%(-)?([A-Za-z-_+ \n].*)%>/g, function(match, trim, code) {
+    // text was obtained from a call to .innerHTML which automatically escapes "<", ">" and "&". The regexp replace functions thus need to search for the escaped equivalents    
+    return text.replace(/&lt;%(-)?([A-Za-z-_+ \n].*)%&gt;/g, function(match, trim, code) {
       // If it's a <%- %> tag, trim leading/trailing whitespace from the code
       if (trim) {
 	code = code.trim();
@@ -91,6 +92,7 @@ var Twiorg = {
    */
   convertPassage: function(passage) {
     const passageProperties = Twiorg.getPassageProperties(passage);
+    // Note: innerHTML automatically escapes "<", ">" and "&". The regexp replace functions thus need to search for the escaped equivalents
     const passageWithLinksUpdated = Twiorg.convertLinksToOrgFormat(passage.innerHTML);
     const convertedPassage = Twiorg.convertJSTemplatesToOrgFormat(passageWithLinksUpdated);
 
