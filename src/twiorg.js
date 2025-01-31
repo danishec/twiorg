@@ -15,22 +15,6 @@ var Twiorg = {
       return `[[${link}][${linkText}]]`; 
     });
   },
-
-  /**
-   * Convert an entire passage.
-   *
-   * @param {Object} passage
-   *   The passage data HTML element.
-   *
-   * @return String
-   *   String containing the procesed passage in org syntax
-   */
-  convertPassage: function(passage) {
-    const passageProperties = getPassageProperties(passage);
-    const convertedPassageText = Twiorg.convertLinksToOrgFormat(passage.innerHTML);
-
-    return `* ${passage.attributes.name.value}\n${passageProperties}\n${convertedPassageText}\n`;
-  },
   /**
    * Get the Passage properties
    *
@@ -54,25 +38,19 @@ var Twiorg = {
     return `${properties}\n:END:`;
   },
   /**
-   * Convert an entire story.
+   * Convert an entire passage.
    *
-   * @param {Object} story
-   *   The story data HTML element.
+   * @param {Object} passage
+   *   The passage data HTML element.
    *
    * @return String
-   *   String containing entire story converted to Org format
+   *   String containing the procesed passage in org syntax
    */
-  convertStory: function(story) {
-    const passages = story.getElementsByTagName("tw-passagedata");
+  convertPassage: function(passage) {
+    const passageProperties = Twiorg.getPassageProperties(passage);
+    const convertedPassageText = Twiorg.convertLinksToOrgFormat(passage.innerHTML);
 
-    const convertedPassages = Array.prototype.slice.call(passages).map(Twiorg.convertPassage);
-
-    const orgText = convertedPassages.join("\n");
-
-    const storyMetaData = Twiorg.getStoryMetaData(story);
-
-    return `${storyMetadata}\n${orgText}`;
- 
+    return `* ${passage.attributes.name.value}\n${passageProperties}\n${convertedPassageText}\n`;
   },
   /**
    * Get the Story Meta Data
@@ -96,7 +74,27 @@ var Twiorg = {
     
     return metadata;
   },
+  /**
+   * Convert an entire story.
+   *
+   * @param {Object} story
+   *   The story data HTML element.
+   *
+   * @return String
+   *   String containing entire story converted to Org format
+   */
+  convertStory: function(story) {
+    const passages = story.getElementsByTagName("tw-passagedata");
 
+    const convertedPassages = Array.prototype.slice.call(passages).map(Twiorg.convertPassage);
+
+    const orgText = convertedPassages.join("\n");
+
+    const storyMetaData = Twiorg.getStoryMetaData(story);
+
+    return `${storyMetaData}\n${orgText}`;
+ 
+  },
   /**
    * The entry-point for converting Twine data into the Twiorg format.
    */
