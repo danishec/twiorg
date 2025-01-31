@@ -59,8 +59,8 @@ var Twiorg = {
    * @param {Object} story
    *   The story data HTML element.
    *
-   * @return {Object}
-   *   Object containing processed "passages" of data.
+   * @return String
+   *   String containing entire story converted to Org format
    */
   convertStory: function(story) {
     const passages = story.getElementsByTagName("tw-passagedata");
@@ -103,7 +103,7 @@ var Twiorg = {
   convert: function() {
     const storyData = document.getElementsByTagName("tw-storydata")[0];
     const org = Twiorg.convertStory(storyData);
-    document.getElementById("output").innerHTML = org;
+    document.getElementById("output").textContent = org;
   }
 }
 
