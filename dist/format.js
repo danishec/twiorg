@@ -1,6 +1,6 @@
 window.storyFormat({
   "name": "Twiorg",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "author": "Danish Khatri",
   "description": "Export your Twine 2 story as an Org Mode Org file",
   "proofing": false,
