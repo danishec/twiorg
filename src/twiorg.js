@@ -75,6 +75,9 @@ var Twiorg = {
     attributes.forEach((attr) => {
       const value = passage.attributes[attr].value;
       if (value) {
+	if (attr === "tags") {
+	  attr = "tags_";
+	}
 	properties += `:${attr}: ${value}\n`;
       }
     });
