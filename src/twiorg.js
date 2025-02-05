@@ -18,7 +18,6 @@ var Twiorg = {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   },
-
   /**
    *
    * Function to convert JavaScript templates to Org mode Babel source code blocks
@@ -108,7 +107,7 @@ var Twiorg = {
    *   String containing processed metadata
    */
   getStoryMetaData: function(story) {
-    const attributes = ["name", "startnode", "creator", "creator-version", "format-version", "options", "tags", "zoom", "hidden", "ifid"];
+    const attributes = ["name", "startnode", "creator", "creator-version", "format", "format-version", "options", "tags", "zoom", "hidden", "ifid"];
     let metadata = `#+TITLE: ${story.attributes.name.value}\n* Twine 2 Metadata:\n:PROPERTIES:\n`;
 
     attributes.forEach((attr) => {
