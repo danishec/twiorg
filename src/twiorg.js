@@ -108,7 +108,7 @@ var Twiorg = {
    */
   getStoryMetaData: function(story) {
     const attributes = ["name", "startnode", "creator", "creator-version", "format", "format-version", "options", "tags", "zoom", "hidden", "ifid"];
-    let metadata = `#+TITLE: ${story.attributes.name.value}\n* Twine 2 Metadata:\n:PROPERTIES:\n`;
+    let metadata = `#+TITLE: ${story.attributes.name.value}\n* Twine 2 Metadata\n:PROPERTIES:\n`;
 
     attributes.forEach((attr) => {
       const value = story.attributes[attr].value;

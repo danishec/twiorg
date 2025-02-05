@@ -6,7 +6,7 @@ It is inspired by [Twison](https://github.com/lazerwalker/twison/), a useful for
 
 ## Installation
 
-From the Twine 2 story select add a story format, and point it to the url (https://cdn.githubraw.com/danishec/twiorg/v0.3.4/dist/format.js). Build the story using the added Twiorg format
+From the Twine 2 story select add a story format, and point it to the url (https://cdn.githubraw.com/danishec/twiorg/v0.3.5/dist/format.js). Build the story using the added Twiorg format
 
 ## Output
 
@@ -20,7 +20,8 @@ Here's an example of its output:
 :startnode: 1
 :creator: Twine
 :creator-version: 2.10.0
-:format-version: 0.3.4
+:format: Twiorg
+:format-version: 0.3.5
 :zoom: 1
 :ifid: 2DADFBDA-06DE-4776-B912-AC93F4F08CBF
 :END:
@@ -32,6 +33,7 @@ Here's an example of its output:
 :position: 50,250
 :size: 100,100
 :END:
+
 #+BEGIN_SRC javascript
 
 window.story.state = {
