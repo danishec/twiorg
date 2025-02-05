@@ -6,7 +6,7 @@ It is inspired by [Twison](https://github.com/lazerwalker/twison/), a useful for
 
 ## Installation
 
-From the Twine 2 story select add a story format, and point it to the url (https://cdn.githubraw.com/danishec/twiorg/v0.3.5/dist/format.js). Build the story using the added Twiorg format
+From the Twine 2 story select add a story format, and point it to the url (https://cdn.githubraw.com/danishec/twiorg/v0.3.7/dist/format.js). Build the story using the added Twiorg format
 
 ## Output
 
